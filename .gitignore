@@ -1,3 +1,6 @@
 node_modules/**/*
 .expo/*
 npm-debug.*
+.gitignore
+App.js
+.eslintrc.json
