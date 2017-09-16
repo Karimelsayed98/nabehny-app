@@ -1,37 +1,38 @@
 import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 import { View, Text, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = 0.0421;
 
 export default class MapScreen extends Component {
-  state = {
-    region: {
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    },
-  }
-
-  getInitialState() {
-    return {
+  constructor() {
+    super();
+    this.state = {
       region: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
       },
     };
   }
 
-  onPanDrag(newRegion) {
-    const { latitude, longitude } = newRegion.coordinate;
-    console.log(latitude, longitude);
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.setState({
+        region: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        },
+      });
+    });
   }
 
   onRegionChange(region) {
     this.setState({ region });
-    console.log(region);
   }
 
   render() {
