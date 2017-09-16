@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MapView from 'react-native-maps';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const LATITUDE_DELTA = 0.0922;
@@ -53,8 +53,13 @@ export default class MapScreen extends Component {
             <MaterialIcons name="my-location" size={24} color="#000" />
           </View>
         </MapView>
-        <Text> {this.state.region.latitude} </Text>
-        <Text> {this.state.region.longitude} </Text>
+        <View style={{ justifyContent: 'center', height: 48, backgroundColor: '#841584' }}>
+          <Button
+            title="Pin Location"
+            onPress={() => console.log('Pin Location')}
+            color="#fff"
+          />
+        </View>
       </View>
     );
   }
