@@ -9,7 +9,11 @@
     "expo": "^20.0.0",
     "react": "16.0.0-alpha.12",
     "react-native": "https://github.com/expo/react-native/archive/sdk-20.0.0.tar.gz",
+<<<<<<< HEAD
     "react-native-maps": "^0.16.4"
+=======
+    "react-navigation": "^1.0.0-beta.11"
+>>>>>>> navigation
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
