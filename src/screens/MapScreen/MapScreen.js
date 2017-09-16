@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 import { View, Text, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0421;
@@ -48,12 +49,9 @@ export default class MapScreen extends Component {
           loadingEnabled
           style={styles.map}
         >
-          <MapView.Marker
-            coordinate={{
-              latitude: this.state.region.latitude,
-              longitude: this.state.region.longitude,
-            }}
-          />
+          <View style={{ width: 30, height: 30, backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', alignItems: 'center' }}>
+            <MaterialIcons name="my-location" size={24} color="#000" />
+          </View>
         </MapView>
         <Text> {this.state.region.latitude} </Text>
         <Text> {this.state.region.longitude} </Text>
@@ -68,5 +66,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
