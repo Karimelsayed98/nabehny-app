@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 import React from 'react';
 import { RootNavigator } from './src/Navigation/Navigation';
 
