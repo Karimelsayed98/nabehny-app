@@ -3,7 +3,6 @@ import { ListView, Text, StyleSheet, View, Dimensions } from 'react-native';
 
 const data = require('./db.json');
 
-
 export default class UserStories extends Component {
   constructor() {
     super();
@@ -12,6 +11,7 @@ export default class UserStories extends Component {
       mydataSource: ds.cloneWithRows(data.messages),
     };
   }
+
   render() {
     return (
       <ListView

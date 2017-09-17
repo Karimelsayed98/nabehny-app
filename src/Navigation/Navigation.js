@@ -1,11 +1,11 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
-import ScreenOne from '../screens/ScreenOne';
-import ScreenTwo from '../screens/ScreenTwo';
-import LoginScreen from '../screens/LoginScreen';
+import MapScreen from '../screens/MapScreen/MapScreen';
+import UserStories from '../screens/UserStories/UserStories';
+import ContactUs from '../screens/ContactUs/ContactUs';
 import RegisterScreen from '../screens/RegisterScreen';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons';
 
 const DrawerIcon = ({ navigation }) => (
   <Entypo
@@ -18,51 +18,76 @@ const DrawerIcon = ({ navigation }) => (
   />
 );
 
-const firstScreen = StackNavigator(
+const MapScreenStack = StackNavigator(
   {
-    First: { screen: ScreenOne },
+    First: { screen: MapScreen },
   },
   {
     navigationOptions: ({ navigation }) => ({
       headerLeft: <DrawerIcon navigation={navigation} />,
-      title: 'Home Screen',
+      title: 'Map',
     }),
   },
 );
-const secondScreen = StackNavigator(
+const UserStoriesStack = StackNavigator(
   {
-    First: { screen: ScreenTwo },
+    First: { screen: UserStories },
   },
   {
     navigationOptions: ({ navigation }) => ({
       headerLeft: <DrawerIcon navigation={navigation} />,
-      title: 'Second Screen',
+      title: 'User Stories',
+    }),
+  },
+);
+
+const ContactUsStack = StackNavigator(
+  {
+    First: { screen: ContactUs },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <DrawerIcon navigation={navigation} />,
+      title: 'Contact Us',
     }),
   },
 );
 
 export const DrawerNavigation = DrawerNavigator(
   {
-    FirstScreen: {
-      screen: firstScreen,
+    MapScreen: {
+      screen: MapScreenStack,
       navigationOptions: {
-        drawerLabel: 'Screen 1',
+        drawerLabel: 'Map',
         drawerIcon: ({ tintColor }) => (
           <Ionicons
-            name="md-home"
+            name="ios-map"
             size={24}
             color={tintColor}
           />
         ),
       },
     },
-    SecondScreen: {
-      screen: secondScreen,
+    UserStories: {
+      screen: UserStoriesStack,
       navigationOptions: {
-        drawerLabel: 'Screen 2',
+        drawerLabel: 'User Stories',
+        drawerIcon: ({ tintColor }) => (
+          <FontAwesome
+            name="feed"
+            size={24}
+            color={tintColor}
+          />
+        ),
+      },
+    },
+    ContactUs: {
+      screen: ContactUsStack,
+      navigationOptions: {
+        drawerLabel: 'Contact Us',
         drawerIcon: ({ tintColor }) => (
           <Ionicons
-            name="logo-twitter"
+            name="ios-mail"
             size={24}
             color={tintColor}
           />
@@ -71,7 +96,7 @@ export const DrawerNavigation = DrawerNavigator(
     },
   },
   {
-    initialRouteName: 'FirstScreen',
+    initialRouteName: 'MapScreen',
   },
 );
 
@@ -79,12 +104,6 @@ export const RootNavigator = StackNavigator(
   {
     Home: {
       screen: DrawerNavigation,
-    },
-    Login: {
-      screen: LoginScreen,
-      navigationOptions: {
-        title: 'Login',
-      },
     },
     Register: {
       screen: RegisterScreen,
