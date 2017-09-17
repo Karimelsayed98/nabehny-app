@@ -5,6 +5,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0421;
+const styleJSON = require('./MapStyle.json');
+
+const mapStyle = styleJSON.style;
 
 export default class MapScreen extends Component {
   constructor() {
@@ -41,6 +44,7 @@ export default class MapScreen extends Component {
       <View style={styles.container}>
         <MapView
           provider="google"
+          customMapStyle={mapStyle}
           region={this.state.region}
           onRegionChange={region => this.onRegionChange(region)}
           showsUserLocation
@@ -50,7 +54,7 @@ export default class MapScreen extends Component {
           style={styles.map}
         >
           <View style={{ width: 30, height: 30, backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', alignItems: 'center' }}>
-            <MaterialIcons name="my-location" size={24} color="#000" />
+            <MaterialIcons name="my-location" size={24} color="#fff" />
           </View>
         </MapView>
         <View style={{ justifyContent: 'center', height: 48, backgroundColor: '#841584' }}>
