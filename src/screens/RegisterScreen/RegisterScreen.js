@@ -93,7 +93,6 @@ export default class RegisterScreen extends React.Component {
               value={this.state.email}
               borderColor={'#BA1818'}
               onFocus={() => this.enablescroll()}
-
             />
 
             <Hoshi
@@ -105,8 +104,8 @@ export default class RegisterScreen extends React.Component {
               returnKeyType="next"
               borderColor={'#BA1818'}
               onFocus={() => this.enablescroll()}
-
             />
+
             <Hoshi
               style={styles.effect}
               label={'Confirm Password'}
@@ -116,7 +115,6 @@ export default class RegisterScreen extends React.Component {
               returnKeyType="go"
               borderColor={'#BA1818'}
               onFocus={() => this.enablescroll()}
-
             />
           </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>

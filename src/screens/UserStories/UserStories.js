@@ -19,7 +19,7 @@ export default class UserStories extends Component {
         dataSource={this.state.mydataSource}
         renderRow={
           (rowData) => {
-            const regex = /[/u0600-u06FF/]+/;
+            const regex = /[\u0600-\u06FF]+/;
             const isArabic = regex.test(rowData.body);
             return (
               <View style={styles.msg}>
