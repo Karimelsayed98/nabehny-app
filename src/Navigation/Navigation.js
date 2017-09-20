@@ -1,10 +1,10 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
 import MapScreen from '../screens/MapScreen/MapScreen';
 import UserStories from '../screens/UserStories/UserStories';
 import ContactUs from '../screens/ContactUs/ContactUs';
-import RegisterScreen from '../screens/RegisterScreen';
+import RegisterScreen from '../screens/RegisterScreen/RegisterScreen';
+import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons';
 
 const DrawerIcon = ({ navigation }) => (
@@ -109,6 +109,12 @@ export const RootNavigator = StackNavigator(
       screen: RegisterScreen,
       navigationOptions: {
         title: 'Register',
+      },
+    },
+    Login: {
+      screen: LoginScreen,
+      navigationOptions: {
+        title: 'Login',
       },
     },
   },
