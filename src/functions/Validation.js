@@ -1,47 +1,40 @@
 import { Alert } from 'react-native';
 
 export default class Validation {
-  static RegisterValidation(mail, password, confirmpassword, fullname) {
-    let errorMsg = '';
+  static RegisterValidation(mail, password, confirmPassword, fullname) {
+    let errorMsg = null;
     const re = /\S+@\S+\.\S+/;
     if (fullname.length === 0) {
-      errorMsg += 'Invalid Full Name\n';
+      errorMsg = 'Invalid Full Name';
     }
     if (!re.test(mail) || mail.length === 0) {
-      errorMsg += 'Invalid Email\n';
+      errorMsg = 'Invalid Email';
     } if (password.length === 0) {
-      errorMsg += 'Invalid Password\n';
-    } if (password !== confirmpassword) {
-      errorMsg += 'Passwords do not match\n';
+      errorMsg = 'Invalid Password';
+    } if (!(password === confirmPassword)) {
+      errorMsg = 'Passwords do not match';
     }
-    if (errorMsg.length === 0) {
-      Alert.alert(
-        'Welcome!',
-        'Successful Submission');
-    } else {
-      Alert.alert(
-        'Please try again!',
-        errorMsg);
+    if (errorMsg === null) {
+      return true;
     }
+    Alert.alert(errorMsg);
+    return false;
   }
-  static loginValidation(mail, password) {
-    let errorMsg = '';
+
+  static loginValidation(email, password) {
+    let errorMsg = null;
     const re = /\S+@\S+\.\S+/;
 
-    if (!re.test(mail) || mail.length === 0) {
-      errorMsg += 'Invalid Email\n';
+    if (!re.test(email) || email.length === 0) {
+      errorMsg = 'Invalid Email';
     }
     if (password.length === 0) {
-      errorMsg += 'Invalid Password\n';
+      errorMsg = 'Invalid Password';
     }
-    if (errorMsg.length === 0) {
-      Alert.alert(
-        'Welcome!',
-        'Successful Login');
-    } else {
-      Alert.alert(
-        'Please try again!',
-        errorMsg);
+    if (errorMsg === null) {
+      return true;
     }
+    Alert.alert(errorMsg);
+    return false;
   }
 }
