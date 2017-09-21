@@ -3,6 +3,7 @@ import MapView from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
 import { View, StyleSheet, Button } from 'react-native';
 import LoginBar from '../../components/LoginBar';
+import AnalyticsCard from '../../components/AnalyticsCard';
 import { firebase } from '../../Firebase/Firebase';
 
 const LATITUDE_DELTA = 0.0922;
@@ -68,6 +69,7 @@ export default class MapScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <AnalyticsCard />
         <MapView
           provider="google"
           customMapStyle={mapStyle}
@@ -82,9 +84,9 @@ export default class MapScreen extends Component {
         >
           {
             (!this.state.changingLocation &&
-            <MaterialIcons name="my-location" size={24} color="#fff" style={{ backgroundColor: 'rgba(0,0,0,0)' }} />
+              <MaterialIcons name="my-location" size={24} color="#fff" style={{ backgroundColor: 'rgba(0,0,0,0)' }} />
             ) ||
-            <MaterialIcons name="location-searching" size={30} color="#fff" style={{ backgroundColor: 'rgba(0,0,0,0)' }} />
+              <MaterialIcons name="location-searching" size={30} color="#fff" style={{ backgroundColor: 'rgba(0,0,0,0)' }} />
           }
         </MapView>
         <View style={{ justifyContent: 'center', height: 48, backgroundColor: '#841584' }}>
