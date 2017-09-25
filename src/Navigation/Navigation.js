@@ -1,21 +1,50 @@
 import React from 'react';
+import { TouchableHighlight } from 'react-native';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
 import MapScreen from '../screens/MapScreen/MapScreen';
 import UserStories from '../screens/UserStories/UserStories';
 import ContactUs from '../screens/ContactUs/ContactUs';
 import RegisterScreen from '../screens/RegisterScreen/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import Profile from '../screens/Profile/Profile';
 import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons';
 
 const DrawerIcon = ({ navigation }) => (
-  <Entypo
-    name="menu"
-    size={28}
-    style={{ marginLeft: 5 }}
+  <TouchableHighlight
+    style={{ alignItems: 'center', justifyContent: 'center', width: 48, height: 48 }}
+    underlayColor={'rgba(0, 0, 0, 0)'}
     onPress={() => {
       navigation.navigate('DrawerOpen');
     }}
-  />
+  >
+    <Entypo
+      name="menu"
+      size={28}
+      onPress={() => {
+        navigation.navigate('DrawerOpen');
+      }}
+    />
+  </TouchableHighlight>
+);
+
+const RegisterScreenStack = StackNavigator(
+  {
+    First: { screen: RegisterScreen },
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  },
+);
+
+const LoginScreenStack = StackNavigator(
+  {
+    First: { screen: LoginScreen },
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  },
 );
 
 const MapScreenStack = StackNavigator(
@@ -29,6 +58,7 @@ const MapScreenStack = StackNavigator(
     }),
   },
 );
+
 const UserStoriesStack = StackNavigator(
   {
     First: { screen: UserStories },
@@ -37,6 +67,18 @@ const UserStoriesStack = StackNavigator(
     navigationOptions: ({ navigation }) => ({
       headerLeft: <DrawerIcon navigation={navigation} />,
       title: 'User Stories',
+    }),
+  },
+);
+
+const ProfileStack = StackNavigator(
+  {
+    First: { screen: Profile },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <DrawerIcon navigation={navigation} />,
+      title: 'Profile',
     }),
   },
 );
@@ -81,6 +123,19 @@ export const DrawerNavigation = DrawerNavigator(
         ),
       },
     },
+    ProfileScreen: {
+      screen: ProfileStack,
+      navigationOptions: {
+        drawerLabel: 'Profile',
+        drawerIcon: ({ tintColor }) => (
+          <Entypo
+            name="user"
+            size={24}
+            color={tintColor}
+          />
+        ),
+      },
+    },
     ContactUs: {
       screen: ContactUsStack,
       navigationOptions: {
@@ -106,13 +161,13 @@ export const RootNavigator = StackNavigator(
       screen: DrawerNavigation,
     },
     Register: {
-      screen: RegisterScreen,
+      screen: RegisterScreenStack,
       navigationOptions: {
         title: 'Register',
       },
     },
     Login: {
-      screen: LoginScreen,
+      screen: LoginScreenStack,
       navigationOptions: {
         title: 'Login',
       },
