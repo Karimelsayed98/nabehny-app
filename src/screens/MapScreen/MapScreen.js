@@ -26,6 +26,11 @@ export default class MapScreen extends Component {
       user: {
         loginState: false,
       },
+      analytics: {
+        pastMonth: 0,
+        pastWeek: 0,
+        safetyRate: 0,
+      },
       changingLocation: false,
     };
   }
@@ -48,9 +53,13 @@ export default class MapScreen extends Component {
     this.setState({ region, changingLocation: true });
   }
 
+  onRegionChangeComplete() {
+    this._getAnalytics();
+    this.setState({ changingLocation: false });
+  }
+
   async userLoginListener() {
     await firebase.auth().onAuthStateChanged((user) => {
-      console.log('listener');
       if (user) {
         // User is signed in.
         this.setState({ user: { loginState: true } });
@@ -61,21 +70,91 @@ export default class MapScreen extends Component {
     });
   }
 
-  _logout() {
-    firebase.auth().signOut();
-    this.setState({ user: { loginState: false } });
+  _pinLocation() {
+    const database = firebase.database();
+    const locationsRef = database.ref('locations');
+    const userID = firebase.auth().currentUser.uid;
+    const entryDate = new Date().toLocaleDateString();
+    const robberyDate = new Date().toLocaleDateString();
+    const userStory = '';
+
+    const location = {
+      latitude: this.state.region.latitude,
+      longitude: this.state.region.longitude,
+      userID,
+      entryDate,
+      robberyDate,
+      userStory,
+    };
+    locationsRef.push(location);
+  }
+
+  _getAnalytics() {
+    const database = firebase.database();
+    const locationsRef = database.ref('locations');
+    const positionMargin = 0.045;
+    let pastMonth = 0;
+    let pastWeek = 0;
+    let safetyRate = 0;
+
+    locationsRef.once('value')
+      .then((snapshot) => {
+        const locations = snapshot.val();
+        let result = Object.keys(locations).map(key => locations[key]);
+        safetyRate = result.length;
+
+        result = result.filter(location => (
+          location.latitude >= this.state.region.latitude - positionMargin &&
+          location.latitude <= this.state.region.latitude + positionMargin &&
+          location.longitude >= this.state.region.longitude - positionMargin &&
+          location.longitude <= this.state.region.longitude + positionMargin
+        ));
+        safetyRate = ((safetyRate - result.length) / safetyRate) * 100;
+
+        result = result.filter((location) => {
+          const today = new Date();
+          const robDate = new Date(location.robberyDate).getTime();
+          const lastMonth = new Date().setDate(today.getDate() - 30);
+          return (
+            robDate >= lastMonth
+          );
+        });
+        pastMonth = result.length;
+
+        result = result.filter((location) => {
+          const today = new Date();
+          const robDate = new Date(location.robberyDate).getTime();
+          const lastWeek = new Date().setDate(today.getDate() - 7);
+          return (
+            robDate >= lastWeek
+          );
+        });
+        pastWeek = result.length;
+
+        this.setState({
+          analytics: {
+            pastMonth,
+            pastWeek,
+            safetyRate,
+          },
+        });
+      });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <AnalyticsCard />
+        <AnalyticsCard
+          safetyRate={this.state.analytics.safetyRate}
+          pastMonth={this.state.analytics.pastMonth}
+          pastWeek={this.state.analytics.pastWeek}
+        />
         <MapView
           provider="google"
           customMapStyle={mapStyle}
           region={this.state.region}
           onRegionChange={region => this.onRegionChange(region)}
-          onRegionChangeComplete={() => this.setState({ changingLocation: false })}
+          onRegionChangeComplete={() => this.onRegionChangeComplete()}
           showsUserLocation
           showsMyLocationButton
           cacheEnabled
@@ -94,7 +173,7 @@ export default class MapScreen extends Component {
             ||
             <Button
               title="Pin Location"
-              onPress={() => this._logout()}
+              onPress={() => this._pinLocation()}
               color="#fff"
             />
           }
