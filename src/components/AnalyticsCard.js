@@ -2,33 +2,22 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 export default class AnalyticsCard extends Component {
-  constructor() {
-    super();
-    this.state = {
-      analytics: {
-        thisMonth: 50,
-        thisWeek: 21,
-        safetyRate: 85,
-      },
-    };
-  }
-
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.card}>
           <Text style={styles.header}> PAST MONTH </Text>
-          <Text style={styles.number}> {this.state.analytics.thisMonth} </Text>
+          <Text style={styles.number}> {this.props.pastMonth} </Text>
         </View>
         <View style={styles.vBreak} />
         <View style={styles.card}>
           <Text style={styles.header}> SAFETY RATE </Text>
-          <Text style={styles.number}> {this.state.analytics.safetyRate} </Text>
+          <Text style={styles.number}> {this.props.safetyRate} </Text>
         </View>
         <View style={styles.vBreak} />
         <View style={styles.card}>
           <Text style={styles.header}> PAST WEEK </Text>
-          <Text style={styles.number}> {this.state.analytics.thisWeek} </Text>
+          <Text style={styles.number}> {this.props.pastWeek} </Text>
         </View>
       </View>
     );
@@ -39,7 +28,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderRadius: 6,
     backgroundColor: '#fff',
   },
   card: {
