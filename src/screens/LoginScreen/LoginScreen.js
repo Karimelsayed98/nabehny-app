@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Keyboard, View, Image, Dimensions, TouchableWithoutFeedback, Alert, Button } from 'react-native';
+import { StyleSheet, Keyboard, View, Image, Dimensions, TouchableWithoutFeedback, Alert, Button, TouchableHighlight } from 'react-native';
 import { Hoshi } from 'react-native-textinput-effects';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,12 +47,17 @@ export default class LoginComponents extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Ionicons
-          name="ios-arrow-back-outline"
-          size={36}
+        <TouchableHighlight
+          style={{ alignItems: 'center', justifyContent: 'center', width: 48, height: 48, marginTop: 20 }}
           onPress={() => this.props.navigation.dispatch(NavigationActions.back({}))}
-          style={{ alignSelf: 'flex-start', marginTop: 25, marginLeft: 15 }}
-        />
+          underlayColor={'rgba(0, 0, 0, 0)'}
+        >
+          <Ionicons
+            name="ios-arrow-back-outline"
+            size={36}
+            onPress={() => this.props.navigation.dispatch(NavigationActions.back({}))}
+          />
+        </TouchableHighlight>
         <TouchableWithoutFeedback onPress={() => this.dismissKeyboard()}>
           <KeyboardAwareScrollView scrollEnabled={this.state.scrollState}>
             <Image source={require('../../images/logo.png')} style={styles.logo} />
