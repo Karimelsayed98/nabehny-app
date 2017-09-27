@@ -113,6 +113,7 @@ export default class Profile extends Component {
       }
     }
     if (errorFound) return;
+
     Alert.alert('Profile Updated Successfully');
   }
 
@@ -183,7 +184,7 @@ export default class Profile extends Component {
             </KeyboardAwareScrollView>
           </View>
           <TouchableOpacity
-            style={styles.btnContainer}
+            style={[styles.btnContainer, styles.submit]}
             onPress={() => this._updateProfile()}
           >
             <Text style={styles.button}>
@@ -192,7 +193,7 @@ export default class Profile extends Component {
           </TouchableOpacity >
 
           <TouchableOpacity
-            style={styles.btnContainer}
+            style={[styles.btnContainer, styles.logout]}
             onPress={() => this._logout()}
           >
             <Text style={styles.button}>
@@ -226,10 +227,17 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginBottom: 20,
     marginHorizontal: 10,
+    borderRadius: 25,
   },
   button: {
     textAlign: 'center',
     color: '#ffffff',
     marginHorizontal: 10,
+  },
+  submit: {
+    backgroundColor: '#C74246',
+  },
+  logout: {
+    backgroundColor: '#414c52',
   },
 });
