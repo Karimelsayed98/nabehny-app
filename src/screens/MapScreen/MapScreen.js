@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Button, Modal, Text, TextInput, TouchableHighlight, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 import LoginBar from '../../components/LoginBar';
 import AnalyticsCard from '../../components/AnalyticsCard';
 import { firebase } from '../../Firebase/Firebase';
+import Validation from '../../functions/Validation';
 
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0421;
@@ -32,6 +33,9 @@ export default class MapScreen extends Component {
         safetyRate: 0,
       },
       changingLocation: false,
+      modalVisible: false,
+      userStory: '',
+      robberyDate: '',
     };
   }
 
@@ -70,13 +74,30 @@ export default class MapScreen extends Component {
     });
   }
 
+  openLocationSubmitModal() {
+    Validation.checkLastEntry()
+      .then((isValid) => {
+        if (isValid) {
+          console.log(isValid);
+          this.setState({ modalVisible: true });
+        }
+      });
+  }
+
   _pinLocation() {
+    if (!Validation.pinLocationValidation(this.state.userStory, this.state.robberyDate)) {
+      return;
+    }
+
     const database = firebase.database();
     const locationsRef = database.ref('locations');
     const userID = firebase.auth().currentUser.uid;
     const entryDate = new Date().toLocaleDateString();
-    const robberyDate = new Date().toLocaleDateString();
-    const userStory = '';
+    let robberyDate = new Date().toLocaleDateString();
+    if (this.state.robberyDate) {
+      robberyDate = new Date(this.state.robberyDate).toLocaleDateString();
+    }
+    const userStory = this.state.userStory;
 
     const location = {
       latitude: this.state.region.latitude,
@@ -86,7 +107,11 @@ export default class MapScreen extends Component {
       robberyDate,
       userStory,
     };
-    locationsRef.push(location);
+    locationsRef.push(location, () => {
+      this.setState({ modalVisible: false });
+      setTimeout(() => { Alert.alert('Location Pinned Successfully'); }, 1000);
+    });
+    AsyncStorage.setItem('lastEntryDate', entryDate);
   }
 
   _getAnalytics() {
@@ -144,8 +169,53 @@ export default class MapScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+        >
+          <View style={{ flex: 1, alignItems: 'stretch', paddingTop: 30 }}>
+            <View>
+              <Text style={{ fontSize: 18 }}> Your Story </Text>
+              <TextInput
+                placeholder="Write The Robbery Story  (optional)"
+                multiline
+                style={{ height: 150, borderColor: 'gray', borderWidth: 1, borderRadius: 5, fontSize: 14, marginVertical: 5, marginHorizontal: 5, padding: 5, marginBottom: 15 }}
+                onChangeText={userStory => this.setState({ userStory })}
+              />
+              <Text style={{ fontSize: 18 }}> Robbery Date </Text>
+              <TextInput
+                placeholder="DD/MM/YYYY  (optional)"
+                style={{ height: 36, borderColor: 'gray', borderWidth: 1, borderRadius: 5, fontSize: 14, marginVertical: 5, marginHorizontal: 5, padding: 5, justifyContent: 'center', marginBottom: 20 }}
+                onChangeText={robberyDate => this.setState({ robberyDate })}
+                keyboardType="numbers-and-punctuation"
+              />
+              <TouchableHighlight
+                style={{
+                  alignItems: 'center',
+                  height: 48,
+                  marginVertical: 10,
+                  backgroundColor: '#e54d4d',
+                  justifyContent: 'center',
+                  marginHorizontal: 20,
+                  borderRadius: 40,
+                }}
+                underlayColor={'#ef5f5f'}
+                onPress={() => this._pinLocation()}
+              >
+                <Text style={{ fontSize: 18, color: '#fff' }}> Submit </Text>
+              </TouchableHighlight>
+              <TouchableOpacity onPress={() => {
+                this.setState({ modalVisible: false });
+              }}
+              >
+                <Text style={{ textAlign: 'center' }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <AnalyticsCard
-          safetyRate={this.state.analytics.safetyRate}
+          safetyRate={this.state.analytics.safetyRate.toFixed(0)}
           pastMonth={this.state.analytics.pastMonth}
           pastWeek={this.state.analytics.pastWeek}
         />
@@ -173,7 +243,7 @@ export default class MapScreen extends Component {
             ||
             <Button
               title="Pin Location"
-              onPress={() => this._pinLocation()}
+              onPress={() => this.openLocationSubmitModal()}
               color="#fff"
             />
           }
