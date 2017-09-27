@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, TouchableOpacity, Text, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { Hoshi } from 'react-native-textinput-effects';
-import Validation from '/Users/mac/Documents/Projects/nabehny-app/src/functions/Validation';
+import { StyleSheet, TextInput, View, Dimensions, TouchableOpacity, Text, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/Entypo';
 
 export default class RegisterScreen extends React.Component {
   constructor(props) {
@@ -34,69 +34,59 @@ export default class RegisterScreen extends React.Component {
         onPress={() => this.dismissKeyboard()}
       >
         <KeyboardAwareScrollView scrollEnabled={this.state.scrollState}>
-
           <View style={styles.registerform}>
-            <Text style={styles.header}>REGISTER</Text>
-
-            <Hoshi
-              style={styles.effect}
-              label={'Full Name'}
-              onChangeText={value => this.setState({ fullname: value })}
-              autoCorrect={false}
-              returnKeyType="next"
-              value={this.state.fullname}
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-
-            />
-            <Hoshi
-              style={styles.effect}
-              label={'Email'}
-              onChangeText={value => this.setState({ email: value })}
-              autoCorrect={false}
-              returnKeyType="next"
-              value={this.state.email}
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-
-            />
-
-            <Hoshi
-              style={styles.effect}
-              label={'Password'}
-              onChangeText={value => this.setState({ password: value })}
-              value={this.state.password}
-              secureTextEntry
-              returnKeyType="next"
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-
-            />
-            <Hoshi
-              style={styles.effect}
-              label={'Confirm Password'}
-              onChangeText={value => this.setState({ confirmPassword: value })}
-              value={this.state.confirmPassword}
-              secureTextEntry
-              returnKeyType="go"
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-
-            />
-            <View style={styles.btnstyle}>
-              <TouchableOpacity
-                onPress={() => {
-                  Validation.RegisterValidation(
-                    this.state.email,
-                    this.state.password,
-                    this.state.confirmPassword,
-                    this.state.fullname);
-                }}
-              >
-                <Text style={styles.btntext}> SUBMIT </Text>
-              </TouchableOpacity>
+            <View style={styles.TextInputView}>
+              <Icon2 style={styles.IconStyles} name="user" size={20} color="grey" />
+              <TextInput
+                placeholder={' Full Name'}
+                style={styles.textInputsStyle}
+                onFocus={() => this.enablescroll()}
+                onChangeText={value => this.setState({ fullname: value })}
+                autoCorrect={false}
+                returnKeyType="next"
+                value={this.state.fullname}
+              />
             </View>
+            <View style={styles.TextInputView}>
+              <Icon style={styles.IconStyles} name="envelope" size={20} color="grey" />
+              <TextInput
+                placeholder={' Email'}
+                style={styles.textInputsStyle}
+                onFocus={() => this.enablescroll()}
+                onChangeText={value => this.setState({ email: value })}
+                keyboardType="email-address"
+                autoCorrect={false}
+                returnKeyType="next"
+                value={this.state.email}
 
+              />
+            </View>
+            <View style={styles.TextInputView}>
+              <Icon style={styles.IconStyles} name="lock" size={23} color="grey" />
+
+              <TextInput
+                onChangeText={value => this.setState({ password: value })}
+                value={this.state.password}
+                secureTextEntry
+                returnKeyType="go"
+                onFocus={() => this.enablescroll()}
+                placeholder={'Password'}
+                style={styles.textInputsStyle}
+              />
+            </View>
+            <View style={styles.TextInputView}>
+              <Icon style={styles.IconStyles} name="lock" size={23} color="grey" />
+
+              <TextInput
+                onChangeText={value => this.setState({ confirmPassword: value })}
+                value={this.state.confirmPassword}
+                secureTextEntry
+                returnKeyType="go"
+                onFocus={() => this.enablescroll()}
+                placeholder={'Password'}
+                style={styles.textInputsStyle}
+              />
+            </View>
           </View>
         </KeyboardAwareScrollView >
 
@@ -112,7 +102,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: 'white',
     padding: 15,
-    top: height * 0.13,
   },
   effect: {
     alignSelf: 'stretch',
@@ -146,4 +135,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  TextInputView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    padding: 5,
+    borderBottomWidth: 2,
+    borderColor: 'grey',
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 30,
+
+  },
+  textInputsStyle: {
+    flex: 1,
+    paddingTop: 10,
+    marginLeft: 5,
+    paddingRight: 10,
+    paddingBottom: 10,
+    paddingLeft: 0,
+    backgroundColor: '#fff',
+    color: '#424242',
+  },
+
 });
