@@ -4,16 +4,22 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Alert,
+  Linking,
 } from 'react-native';
 import Communications from 'react-native-communications';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+
 
 export default class ContactUs extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <TouchableOpacity
-          onPress={() => Communications.email(['nabehny@gmail.com'], null, null, 'Subject', 'body text')}
+          onPress={() => Linking.openURL('mailto:nabehny@gmail.com')
+            .catch((error) => {
+              Alert.alert('An error occured, You can mail us on:\nnabehny@gmail.com');
+            })}
           style={[styles.holdermail, styles.button]}
         >
           <Ionicons name="ios-mail" size={35} color="white" style={styles.logo} />
@@ -21,7 +27,7 @@ export default class ContactUs extends React.Component {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => Communications.web('https://www.instagram.com/nabehny/')}
+          onPress={() => Linking.openURL('https://www.fb.com/nabehny')}
           style={[styles.holderfb, styles.button]}
         >
           <FontAwesome
@@ -33,7 +39,7 @@ export default class ContactUs extends React.Component {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => Communications.web('https://www.facebook.com/nabehny/?ref=aymt_homepage_panel')}
+          onPress={() => Linking.openURL('https://www.instagram.com/nabehny')}
           style={[styles.holderinsta, styles.button]}
         >
           <FontAwesome
@@ -54,6 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    backgroundColor: '#fff',
   },
   holderfb: {
     backgroundColor: '#3b5998',
