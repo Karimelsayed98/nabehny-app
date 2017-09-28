@@ -39,8 +39,8 @@ export default class Validation {
   }
 
   static pinLocationValidation(userStory, date) {
-    if (userStory && userStory.length < 200) {
-      Alert.alert('User Story should be empty or at least 200 letter');
+    if (userStory && userStory.length < 100) {
+      Alert.alert('Robbery Story should be empty or at least 100 letter');
       return false;
     }
     const regexDate = /^(0?[1-9]|[12][0-9]|3[01])[/-](0?[1-9]|1[0-2])[/-](201[0-9])$/;
@@ -51,13 +51,33 @@ export default class Validation {
     return true;
   }
 
+  static validateDate(date) {
+    const regexDate = /^(0?[1-9]|[12][0-9]|3[01])[/-](0?[1-9]|1[0-2])[/-](201[0-9])$/;
+    return regexDate.test(date);
+  }
+
+  static convertToValidDate(inputFormat) {
+    const d = [];
+    let s = '';
+    for (let i = 0; i < inputFormat.length; i++) {
+      if (inputFormat[i] === '/') {
+        d.push(s);
+        s = '';
+      } else {
+        s += inputFormat[i];
+      }
+    }
+    d.push(s);
+    return [d[1], d[0], d[2]].join('/');
+  }
+
   static async checkLastEntry() {
-    const lastEntry = await AsyncStorage.getItem('lastEntryDate');
+    let lastEntry = await AsyncStorage.getItem('lastEntryDate');
     if (!lastEntry) return true;
+    lastEntry = this.convertToValidDate(lastEntry);
     const lastEntryDate = new Date(lastEntry);
     lastEntryDate.setDate(lastEntryDate.getDate() + 30);
     const today = new Date();
-    console.log(lastEntryDate, today);
     if (today < lastEntryDate) { Alert.alert('30 Days need to pass to pin another location'); }
     return (today >= lastEntryDate);
   }
