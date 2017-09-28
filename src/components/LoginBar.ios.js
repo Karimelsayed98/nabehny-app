@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
   loginButton: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#414c52',
   },
   registerButton: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'red',
+    backgroundColor: '#c74246',
   },
 });
