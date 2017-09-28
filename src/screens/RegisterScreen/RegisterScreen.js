@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, Text, Keyboard, TouchableWithoutFeedback, Alert, Button, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, Keyboard, TouchableWithoutFeedback, Alert, Button, TouchableHighlight, Image, TextInput, Platform } from 'react-native';
 import { Hoshi } from 'react-native-textinput-effects';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons';
 import { NavigationActions } from 'react-navigation';
 import { firebase } from '../../Firebase/Firebase';
 import Validation from '../../functions/Validation';
+
+const logo = require('../../images/logo.png');
 
 export default class RegisterScreen extends React.Component {
   constructor(props) {
@@ -40,9 +42,7 @@ export default class RegisterScreen extends React.Component {
         })
         .catch((error) => {
           // Error in Register
-          console.log(error.name);
-          console.log(error.message);
-          Alert.alert('A Problem Occured, Please try again');
+          Alert.alert(error.message);
         });
     }
   }
@@ -77,61 +77,104 @@ export default class RegisterScreen extends React.Component {
           />
         </TouchableHighlight>
         <TouchableWithoutFeedback onPress={() => this.dismissKeyboard()}>
-          <KeyboardAwareScrollView scrollEnabled={this.state.scrollState}>
-            <Text style={styles.header}>REGISTER</Text>
-            <Hoshi
-              style={styles.effect}
-              label={'Full Name'}
-              onChangeText={value => this.setState({ fullname: value })}
-              autoCorrect={false}
-              returnKeyType="next"
-              value={this.state.fullname}
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-            />
-            <Hoshi
-              style={styles.effect}
-              label={'Email'}
-              onChangeText={value => this.setState({ email: value })}
-              autoCorrect={false}
-              returnKeyType="next"
-              value={this.state.email}
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-            />
+          <KeyboardAwareScrollView scrollEnabled={this.state.scrollState} enableOnAndroid extraHeight={90}>
+            <Image source={logo} style={styles.logo} />
 
-            <Hoshi
-              style={styles.effect}
-              label={'Password'}
-              onChangeText={value => this.setState({ password: value })}
-              value={this.state.password}
-              secureTextEntry
-              returnKeyType="next"
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-            />
+            <View style={styles.Viewicon}>
+              <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                <Entypo style={styles.icon} name="user" size={24} color="#414c52" />
+              </View>
+              <TextInput
+                style={styles.txtinput}
+                placeholder={'Full Name'}
+                returnKeyType="next"
+                onSubmitEditing={() => this.emailInput.focus()}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                inputStyle={{ color: 'black' }}
+                onChangeText={value => this.setState({ fullname: value })}
+                onFocus={() => this.enablescroll()}
+              />
+            </View>
 
-            <Hoshi
-              style={styles.effect}
-              label={'Confirm Password'}
-              onChangeText={value => this.setState({ confirmPassword: value })}
-              value={this.state.confirmPassword}
-              secureTextEntry
-              returnKeyType="go"
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-            />
+            <View style={styles.Viewicon}>
+              <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                <Entypo style={styles.icon} name="mail" size={24} color="#414c52" />
+              </View>
+              <TextInput
+                style={styles.txtinput}
+                placeholder={'Email'}
+                ref={(input) => { this.emailInput = input; }}
+                onSubmitEditing={() => this.Password.focus()}
+                returnKeyType="next"
+                keyboardType="email-address"
+                autoCapitalize={'none'}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                inputStyle={{ color: 'black' }}
+                onChangeText={value => this.setState({ email: value })}
+                onFocus={() => this.enablescroll()}
+              />
+            </View>
+
+            <View style={styles.Viewicon}>
+              <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                <Ionicons style={styles.icon} name="md-lock" size={24} color="#414c52" />
+              </View>
+              <TextInput
+                style={styles.txtinput}
+                placeholder={'Password'}
+                returnKeyType="next"
+                ref={(input) => { this.Password = input; }}
+                onSubmitEditing={() => this.ConfirmationInput.focus()}
+                autoCapitalize={'none'}
+                secureTextEntry
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                inputStyle={{ color: 'black' }}
+                onFocus={() => this.enablescroll()}
+                onChangeText={value => this.setState({ password: value })}
+              />
+            </View>
+
+            <View style={styles.Viewicon}>
+              <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                <FontAwesome style={styles.icon} name="repeat" size={24} color="#414c52" />
+              </View>
+              <TextInput
+                style={styles.txtinput}
+                placeholder={'Confirm Password'}
+                secureTextEntry
+                ref={(input2) => { this.ConfirmationInput = input2; }}
+                returnKeyType="go"
+                inputStyle={{ color: 'black' }}
+                autoCapitalize={'none'}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                onFocus={() => this.enablescroll()}
+                onChangeText={value => this.setState({ confirmPassword: value })}
+              />
+            </View>
+
           </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
-        <View
+        { (Platform.OS === 'android' &&
+        <TouchableHighlight
           onPress={() => this._register()}
-          style={styles.btnStyle}
+          style={{ backgroundColor: '#C74246', alignItems: 'center', justifyContent: 'center', height: 48, marginBottom: 20, borderRadius: 25, marginHorizontal: 10, padding: 10 }}
+          underlayColor={'rgba(255, 255, 255, 0.1)'}
         >
-          <Button
-            title="Submit"
-            onPress={() => this._register()}
-          />
-        </View>
+          <Text style={{ color: '#fff' }}> Register </Text>
+        </TouchableHighlight>
+        ) ||
+          <View style={styles.btnStyle}>
+            <Button
+              title="Register"
+              onPress={() => this._register()}
+              color="#fff"
+            />
+          </View>
+        }
       </View>
     );
   }
@@ -156,14 +199,41 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   btnStyle: {
-    borderWidth: 1.5,
-    alignContent: 'stretch',
-    borderColor: '#F3F3F3',
-    padding: 6,
-    alignItems: 'center',
+    borderRadius: 25,
+    justifyContent: 'center',
+    backgroundColor: '#C74246',
+    marginHorizontal: 10,
+    padding: 10,
+    height: 48,
+    alignItems: 'stretch',
+    marginBottom: 20,
   },
   btnText: {
     fontSize: 20,
     color: '#307EFF',
+  },
+  logo: {
+    width: 140,
+    height: 140,
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  txtinput: {
+    height: 40,
+    marginTop: 20,
+    marginBottom: 5,
+    fontSize: 20,
+    flex: 1,
+    marginRight: 15,
+  },
+
+  Viewicon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  icon: {
+    textAlign: 'center',
+    marginHorizontal: 0,
   },
 });

@@ -32,19 +32,19 @@ export default class UserStories extends Component {
   render() {
     return (
       <ListView
-        style={{ width: Dimensions.get('window').width }}
+        style={{ width: Dimensions.get('window').width, backgroundColor: '#fff' }}
         dataSource={this.state.mydataSource}
         enableEmptySections
         renderRow={
           (rowData) => {
             const regex = /[\u0600-\u06FF]+/;
-            const isArabic = regex.test(rowData.body);
+            const isArabic = regex.test(rowData.userStory);
             return (
               <View style={styles.msg}>
                 <Text style={(isArabic && { alignItems: 'stretch', textAlign: 'right' }) || { alignItems: 'stretch', textAlign: 'left' }}>
                   {rowData.userStory}
                 </Text>
-                <Text style={!isArabic && { alignSelf: 'flex-end' }}>
+                <Text style={!isArabic && { alignSelf: 'flex-end', marginTop: 5 }}>
                   {rowData.entryDate}
                 </Text>
               </View>

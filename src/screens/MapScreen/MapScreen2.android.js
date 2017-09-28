@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
-import { View, StyleSheet, Button, Modal, Text, TextInput, TouchableHighlight, TouchableOpacity, Alert, AsyncStorage, Platform } from 'react-native';
+import { View, StyleSheet, Button, Modal, Text, TextInput, TouchableHighlight, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 import LoginBar from '../../components/LoginBar';
 import AnalyticsCard from '../../components/AnalyticsCard';
 import { firebase } from '../../Firebase/Firebase';
@@ -36,27 +36,10 @@ export default class MapScreen extends Component {
       modalVisible: false,
       userStory: '',
       robberyDate: '',
-      accentColor: '#C74246',
     };
   }
 
   async componentDidMount() {
-    // Getting user current position
-    this.getUserLocation();
-    // AsyncStorage.setItem('lastEntryDate', '');
-  }
-
-
-  onRegionChange(region) {
-    this.setState({ region, changingLocation: true });
-  }
-
-  onRegionChangeComplete() {
-    this._getAnalytics();
-    this.setState({ changingLocation: false });
-  }
-
-  async getUserLocation() {
     // Getting user current position
     navigator.geolocation.getCurrentPosition((position) => {
       this.setState({
@@ -66,8 +49,18 @@ export default class MapScreen extends Component {
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
         },
+        accentColor: '#C74246',
       });
     });
+  }
+
+  onRegionChange(region) {
+    this.setState({ region, changingLocation: true });
+  }
+
+  onRegionChangeComplete() {
+    this._getAnalytics();
+    this.setState({ changingLocation: false });
   }
 
   async userLoginListener() {
@@ -97,21 +90,6 @@ export default class MapScreen extends Component {
     return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/');
   }
 
-  convertToValidDate(inputFormat) {
-    const d = [];
-    let s = '';
-    for (let i = 0; i < inputFormat.length; ++i) {
-      if (inputFormat[i] === '/') {
-        d.push(s);
-        s = '';
-      } else {
-        s += inputFormat[i];
-      }
-    }
-    d.push(s);
-    return [d[1], d[0], d[2]].join('/');
-  }
-
   _pinLocation() {
     if (!Validation.pinLocationValidation(this.state.userStory, this.state.robberyDate)) {
       return;
@@ -125,7 +103,6 @@ export default class MapScreen extends Component {
     if (this.state.robberyDate) {
       robberyDate = new Date(this.state.robberyDate).toLocaleDateString();
     }
-
     const userStory = this.state.userStory;
 
     entryDate = this.convertDate(entryDate);
@@ -143,14 +120,13 @@ export default class MapScreen extends Component {
       this.setState({ modalVisible: false });
       setTimeout(() => { Alert.alert('Location Pinned Successfully'); }, 1000);
     });
-    console.log(entryDate);
     AsyncStorage.setItem('lastEntryDate', entryDate);
   }
 
   _getAnalytics() {
     const database = firebase.database();
     const locationsRef = database.ref('locations');
-    const positionMargin = 0.01;
+    const positionMargin = 0.045;
     let pastMonth = 0;
     let pastWeek = 0;
     let safetyRate = 0;
@@ -171,7 +147,7 @@ export default class MapScreen extends Component {
 
         result = result.filter((location) => {
           const today = new Date();
-          const robDate = new Date(this.convertToValidDate(location.robberyDate)).getTime();
+          const robDate = new Date(location.robberyDate).getTime();
           const lastMonth = new Date().setDate(today.getDate() - 30);
           return (
             robDate >= lastMonth
@@ -181,7 +157,7 @@ export default class MapScreen extends Component {
 
         result = result.filter((location) => {
           const today = new Date();
-          const robDate = new Date(this.convertToValidDate(location.robberyDate)).getTime();
+          const robDate = new Date(location.robberyDate).getTime();
           const lastWeek = new Date().setDate(today.getDate() - 7);
           return (
             robDate >= lastWeek
@@ -206,7 +182,6 @@ export default class MapScreen extends Component {
           animationType="slide"
           transparent={false}
           visible={this.state.modalVisible}
-          onRequestClose={() => {}}
         >
           <View style={{ flex: 1, alignItems: 'stretch', paddingTop: 30 }}>
             <View>
@@ -216,9 +191,6 @@ export default class MapScreen extends Component {
                 multiline
                 style={{ height: 150, borderColor: 'gray', borderWidth: 1, borderRadius: 5, fontSize: 14, marginVertical: 5, marginHorizontal: 5, padding: 5, marginBottom: 15 }}
                 onChangeText={userStory => this.setState({ userStory })}
-                underlineColorAndroid="transparent"
-                autoCorrect={false}
-                textAlignVertical={'top'}
               />
               <Text style={{ fontSize: 18 }}> Robbery Date </Text>
               <TextInput
@@ -226,8 +198,6 @@ export default class MapScreen extends Component {
                 style={{ height: 36, borderColor: 'gray', borderWidth: 1, borderRadius: 5, fontSize: 14, marginVertical: 5, marginHorizontal: 5, padding: 5, justifyContent: 'center', marginBottom: 20 }}
                 onChangeText={robberyDate => this.setState({ robberyDate })}
                 keyboardType="numbers-and-punctuation"
-                underlineColorAndroid="transparent"
-                autoCorrect={false}
               />
               <TouchableHighlight
                 style={{
@@ -253,7 +223,6 @@ export default class MapScreen extends Component {
             </View>
           </View>
         </Modal>
-
         <AnalyticsCard
           safetyRate={this.state.analytics.safetyRate.toFixed(0)}
           pastMonth={this.state.analytics.pastMonth}
@@ -263,15 +232,13 @@ export default class MapScreen extends Component {
         <View style={{ justifyContent: 'center', flex: 1 }}>
           {
             (!this.state.changingLocation &&
-              <MaterialIcons name="my-location" size={24} color="#414c52" style={{ backgroundColor: 'rgba(0,0,0,0)', zIndex: 1, position: 'absolute', alignSelf: 'center' }} />
+            <MaterialIcons name="my-location" size={24} color="#414c52" style={{ backgroundColor: 'rgba(0,0,0,0)', zIndex: 1, position: 'absolute', alignSelf: 'center' }} />
             ) ||
-              <MaterialIcons name="location-searching" size={30} color="#414c52" style={{ backgroundColor: 'rgba(0,0,0,0)', zIndex: 1, position: 'absolute', alignSelf: 'center' }} />
+            <MaterialIcons name="location-searching" size={30} color="#414c52" style={{ backgroundColor: 'rgba(0,0,0,0)', zIndex: 1, position: 'absolute', alignSelf: 'center' }} />
           }
-
           <TouchableHighlight
             style={{ height: 60, width: 60, backgroundColor: '#fff', borderRadius: 30, zIndex: 1, position: 'absolute', bottom: 10, right: 10, alignItems: 'center', justifyContent: 'center' }}
             onPress={() => this.getUserLocation()}
-            underlayColor={'rgba(255, 255, 255, 0.1)'}
           >
             <MaterialIcons name="my-location" size={24} color="#414c52" onPress={() => this.getUserLocation()} />
           </TouchableHighlight>
@@ -280,7 +247,7 @@ export default class MapScreen extends Component {
             provider="google"
             region={this.state.region}
             onRegionChange={region => this.onRegionChange(region)}
-            onRegionChangeComplete={region => this.onRegionChangeComplete()}
+            onRegionChangeComplete={() => this.onRegionChangeComplete()}
             showsUserLocation
             style={styles.map}
           />
@@ -289,15 +256,6 @@ export default class MapScreen extends Component {
         <View style={{ justifyContent: 'center', height: 48, backgroundColor: this.state.accentColor }}>
           {(!this.state.user.loginState && <LoginBar navigation={this.props.navigation} />)
             ||
-            (Platform.OS === 'android' &&
-              <TouchableHighlight
-                onPress={() => this.openLocationSubmitModal()}
-                style={{ backgroundColor: '#C74246', alignItems: 'center', justifyContent: 'center' }}
-                underlayColor={'rgba(255, 255, 255, 0.1)'}
-              >
-                <Text style={{ color: '#fff' }}> Pin Location </Text>
-              </TouchableHighlight>
-            ) ||
             <Button
               title="Pin Location"
               onPress={() => this.openLocationSubmitModal()}
@@ -318,5 +276,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: -1,
   },
 });

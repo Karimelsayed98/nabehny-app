@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Sae } from 'react-native-textinput-effects';
@@ -13,6 +14,9 @@ import { firebase } from '../../Firebase/Firebase';
 import LoginBar from '../../components/LoginBar';
 import Validation from '../../functions/Validation';
 import * as Firebase from 'firebase';
+import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -79,11 +83,12 @@ export default class Profile extends Component {
                 this.setState({ email: newEmail });
               })
               .catch((error) => {
-                Alert.alert('Error Updating Profile');
+                Alert.alert(error.message);
+                errorFound = true;
               });
           })
           .catch((error) => {
-            Alert.alert('Invalid Current Password');
+            Alert.alert(error.message);
             errorFound = true;
           });
       } else {
@@ -97,10 +102,11 @@ export default class Profile extends Component {
       if (newPassword === confirmPassword) {
         const credential = Firebase.auth.EmailAuthProvider.credential(user.email, password);
         await user.reauthenticateWithCredential(credential)
-          .then(() => {
-            user.updatePassword(newPassword)
+          .then(async () => {
+            await user.updatePassword(newPassword)
               .catch((error) => {
-                Alert.alert('Error Updating Profile');
+                Alert.alert(error.message);
+                errorFound = true;
               });
           })
           .catch((error) => {
@@ -112,74 +118,114 @@ export default class Profile extends Component {
         return;
       }
     }
-    if (errorFound) return;
 
-    Alert.alert('Profile Updated Successfully');
+    setTimeout(() => {}, 1000);
+    if (!errorFound) {
+      console.log(errorFound);
+      Alert.alert('Profile Updated Successfully');
+    }
   }
 
   render() {
     if (this.state.loginState) {
       return (
         <View style={styles.container}>
-          <View style={{ flex: 1, marginTop: 30 }}>
+          <View style={{ flex: 1, marginTop: 15 }}>
             <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 24 }}> {this.state.userName} </Text>
             <Text style={{ alignSelf: 'center', fontSize: 14 }}> {this.state.email} </Text>
-            <KeyboardAwareScrollView enableOnAndroid >
-              <Sae
-                label={'Full Name'}
-                iconClass={FontAwesomeIcon}
-                iconName={'pencil'}
-                iconColor={'gray'}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                inputStyle={{ color: 'black' }}
-                onChangeText={newUserName => this.setState({ newUserName })}
-                style={{ marginHorizontal: 10 }}
-              />
-              <Sae
-                label={'Email Adress'}
-                iconClass={FontAwesomeIcon}
-                iconName={'pencil'}
-                iconColor={'gray'}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                inputStyle={{ color: 'black' }}
-                onChangeText={newEmail => this.setState({ newEmail })}
-                style={{ marginHorizontal: 10 }}
-              />
-              <Sae
-                label={'Password'}
-                iconClass={FontAwesomeIcon}
-                iconName={'pencil'}
-                iconColor={'gray'}
-                inputStyle={{ color: 'black' }}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={password => this.setState({ password })}
-                style={{ marginHorizontal: 10 }}
-              />
-              <Sae
-                label={'New Password'}
-                iconClass={FontAwesomeIcon}
-                iconName={'pencil'}
-                iconColor={'gray'}
-                inputStyle={{ color: 'black' }}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={newPassword => this.setState({ newPassword })}
-                style={{ marginHorizontal: 10 }}
-              />
-              <Sae
-                label={'Confirm Password'}
-                iconClass={FontAwesomeIcon}
-                iconName={'pencil'}
-                iconColor={'gray'}
-                inputStyle={{ color: 'black' }}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={confirmPassword => this.setState({ confirmPassword })}
-                style={{ marginHorizontal: 10 }}
-              />
+            <KeyboardAwareScrollView enableOnAndroid extraHeight={90}>
+
+              <View style={styles.Viewicon}>
+                <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                  <Entypo style={styles.icon} name="user" size={24} color="#414c52" />
+                </View>
+                <TextInput
+                  style={styles.txtinput}
+                  placeholder={'Full Name'}
+                  returnKeyType="next"
+                  onSubmitEditing={() => this.emailInput.focus()}
+                  autoCapitalize={'none'}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  inputStyle={{ color: 'black' }}
+                  onChangeText={newUserName => this.setState({ newUserName })}
+                />
+              </View>
+
+              <View style={styles.Viewicon}>
+                <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                  <Entypo style={styles.icon} name="mail" size={24} color="#414c52" />
+                </View>
+                <TextInput
+                  style={styles.txtinput}
+                  placeholder={'Email'}
+                  ref={(input) => { this.emailInput = input; }}
+                  onSubmitEditing={() => this.Password.focus()}
+                  returnKeyType="next"
+                  keyboardType="email-address"
+                  autoCapitalize={'none'}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  inputStyle={{ color: 'black' }}
+                  onChangeText={newEmail => this.setState({ newEmail })}
+                />
+              </View>
+
+              <View style={styles.Viewicon}>
+                <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                  <Ionicons style={styles.icon} name="md-lock" size={24} color="#414c52" />
+                </View>
+                <TextInput
+                  style={styles.txtinput}
+                  placeholder={'Password'}
+                  returnKeyType="next"
+                  ref={(input) => { this.Password = input; }}
+                  onSubmitEditing={() => this.newPwInput.focus()}
+                  autoCapitalize={'none'}
+                  secureTextEntry
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  inputStyle={{ color: 'black' }}
+                  onChangeText={password => this.setState({ password })}
+                />
+              </View>
+
+              <View style={styles.Viewicon}>
+                <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                  <Ionicons style={styles.icon} name="md-lock" size={24} color="#414c52" />
+                </View>
+                <TextInput
+                  style={styles.txtinput}
+                  placeholder={'New Password'}
+                  secureTextEntry
+                  ref={(input) => { this.newPwInput = input; }}
+                  onSubmitEditing={() => this.ConfirmationInput.focus()}
+                  returnKeyType="next"
+                  inputStyle={{ color: 'black' }}
+                  autoCapitalize={'none'}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  onChangeText={newPassword => this.setState({ newPassword })}
+                />
+              </View>
+
+              <View style={styles.Viewicon}>
+                <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                  <FontAwesome style={styles.icon} name="repeat" size={24} color="#414c52" />
+                </View>
+                <TextInput
+                  style={styles.txtinput}
+                  placeholder={'Confirm Password'}
+                  secureTextEntry
+                  ref={(input2) => { this.ConfirmationInput = input2; }}
+                  returnKeyType="go"
+                  inputStyle={{ color: 'black' }}
+                  autoCapitalize={'none'}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  onChangeText={confirmPassword => this.setState({ confirmPassword })}
+                />
+              </View>
 
             </KeyboardAwareScrollView>
           </View>
@@ -240,4 +286,23 @@ const styles = StyleSheet.create({
   logout: {
     backgroundColor: '#414c52',
   },
+  txtinput: {
+    height: 40,
+    marginTop: 20,
+    marginBottom: 5,
+    fontSize: 20,
+    flex: 1,
+    marginRight: 15,
+  },
+
+  Viewicon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  icon: {
+    textAlign: 'center',
+    marginHorizontal: 0,
+  },
+
 });

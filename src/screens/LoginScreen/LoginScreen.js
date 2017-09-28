@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, Keyboard, View, Image, Dimensions, TouchableWithoutFeedback, Alert, Button, TouchableHighlight } from 'react-native';
-import { Hoshi } from 'react-native-textinput-effects';
+import { StyleSheet, Keyboard, View, Image, TextInput, TouchableWithoutFeedback, Alert, Button, TouchableHighlight, Platform, Text } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 import { NavigationActions } from 'react-navigation';
 import { firebase } from '../../Firebase/Firebase';
 import Validation from '../../functions/Validation';
+
+const logo = require('../../images/logo.png');
 
 export default class LoginComponents extends React.Component {
   constructor(props) {
@@ -24,7 +25,7 @@ export default class LoginComponents extends React.Component {
           this.props.navigation.navigate('MapScreen');
         })
         .catch((error) => {
-          Alert.alert('Invalid Email or Password');
+          Alert.alert(error.message);
         });
     }
   }
@@ -59,42 +60,65 @@ export default class LoginComponents extends React.Component {
           />
         </TouchableHighlight>
         <TouchableWithoutFeedback onPress={() => this.dismissKeyboard()}>
-          <KeyboardAwareScrollView scrollEnabled={this.state.scrollState}>
-            <Image source={require('../../images/logo.png')} style={styles.logo} />
+          <KeyboardAwareScrollView scrollEnabled={this.state.scrollState} enableOnAndroid extraHeight={90}>
+            <Image source={logo} style={styles.logo} />
 
-            <Hoshi
-              style={styles.effect}
-              label={'Email'}
-              onChangeText={value => this.setState({ email: value })}
-              keyboardType="email-address"
-              autoCorrect={false}
-              returnKeyType="next"
-              value={this.state.email}
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-            />
-            <Hoshi
-              style={styles.effect}
-              label={'Password'}
-              onChangeText={value => this.setState({ password: value })}
-              value={this.state.password}
-              secureTextEntry
-              returnKeyType="go"
-              borderColor={'#BA1818'}
-              onFocus={() => this.enablescroll()}
-            />
+            <View style={styles.Viewicon}>
+              <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                <Entypo style={styles.icon} name="user" size={24} color="#414c52" />
+              </View>
+              <TextInput
+                style={styles.txtinput}
+                placeholder={'Email'}
+                returnKeyType="next"
+                onSubmitEditing={() => this.passwordInput.focus()}
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                inputStyle={{ color: 'black' }}
+                onChangeText={value => this.setState({ email: value })}
+                onFocus={() => this.enablescroll()}
+                underlineColorAndroid="transparent"
+              />
+            </View>
+
+            <View style={styles.Viewicon}>
+              <View style={{ justifyContent: 'flex-end', alignItems: 'center', width: 50, height: 40 }}>
+                <Ionicons style={styles.icon} name="md-lock" size={24} color="#414c52" />
+              </View>
+              <TextInput
+                style={styles.txtinput}
+                placeholder={'Password'}
+                returnKeyType="go"
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                secureTextEntry
+                ref={(input) => { this.passwordInput = input; }}
+                inputStyle={{ color: 'black' }}
+                onChangeText={value => this.setState({ password: value })}
+                onFocus={() => this.enablescroll()}
+                underlineColorAndroid="transparent"
+              />
+            </View>
 
           </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
-        <View
+        { (Platform.OS === 'android' &&
+        <TouchableHighlight
           onPress={() => this._login()}
-          style={styles.btnStyle}
+          style={{ backgroundColor: '#C74246', alignItems: 'center', justifyContent: 'center', height: 48, marginBottom: 20, borderRadius: 25, marginHorizontal: 10, padding: 10 }}
+          underlayColor={'rgba(255, 255, 255, 0.1)'}
         >
-          <Button
-            title="Login"
-            onPress={() => this._login()}
-          />
-        </View>
+          <Text style={{ color: '#fff' }}> Login </Text>
+        </TouchableHighlight>
+        ) ||
+          <View style={styles.btnStyle}>
+            <Button
+              title="Login"
+              onPress={() => this._login()}
+              color="#fff"
+            />
+          </View>
+        }
       </View>
     );
   }
@@ -119,14 +143,35 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   btnStyle: {
-    borderWidth: 1.5,
-    alignContent: 'stretch',
-    borderColor: '#F3F3F3',
-    padding: 6,
-    alignItems: 'center',
+    borderRadius: 25,
+    justifyContent: 'center',
+    backgroundColor: '#C74246',
+    marginHorizontal: 10,
+    padding: 10,
+    height: 48,
+    alignItems: 'stretch',
+    marginBottom: 20,
   },
   btnText: {
     fontSize: 20,
     color: '#307EFF',
+  },
+  txtinput: {
+    height: 40,
+    marginTop: 20,
+    marginBottom: 5,
+    fontSize: 20,
+    flex: 1,
+    marginRight: 15,
+  },
+
+  Viewicon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  icon: {
+    textAlign: 'center',
+    marginHorizontal: 0,
   },
 });
