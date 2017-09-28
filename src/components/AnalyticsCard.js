@@ -12,7 +12,7 @@ export default class AnalyticsCard extends Component {
         <View style={styles.vBreak} />
         <View style={styles.card}>
           <Text style={styles.header}> SAFETY RATE </Text>
-          <Text style={styles.number}> {this.props.safetyRate} </Text>
+          <Text style={styles.number}> {this.props.safetyRate}<Text style={{ fontWeight: 'normal', fontSize: 14 }}>%</Text> </Text>
         </View>
         <View style={styles.vBreak} />
         <View style={styles.card}>
@@ -27,7 +27,7 @@ export default class AnalyticsCard extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     backgroundColor: '#fff',
   },
   card: {
