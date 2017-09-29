@@ -82,14 +82,13 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    width: 250,
     height: 50,
+    alignSelf: 'stretch',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 20,
+    marginHorizontal: 50,
     marginVertical: 25,
-    // padding: 5,
     borderRadius: 5,
   },
 });
