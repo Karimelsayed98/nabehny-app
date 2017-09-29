@@ -22,7 +22,13 @@ export default class LoginComponents extends React.Component {
     if (Validation.loginValidation(this.state.email, this.state.password)) {
       firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
-          this.props.navigation.navigate('MapScreen');
+          const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({ routeName: 'Home' }),
+            ],
+          });
+          this.props.navigation.dispatch(resetAction);
         })
         .catch((error) => {
           Alert.alert(error.message);
