@@ -12,15 +12,14 @@
     "react-native-maps": "^0.16.4",
     "react-navigation": "^1.0.0-beta.11",
     "react-native-communications": "^2.2.1",
-    "react-native-keyboard-aware-scroll-view": "^0.3.0",
-    "react-native-textinput-effects": "^0.4.0"
+    "react-native-keyboard-aware-scroll-view": "^0.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
     "eslint": "^4.6.1",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.3.0"
   }
 }

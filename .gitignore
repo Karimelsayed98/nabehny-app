@@ -1,6 +1,6 @@
 node_modules/**/*
 .expo/*
 npm-debug.*
-App.js
+.DS_Store
 .eslintrc.json
 .gitignore
