@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "nabehny-app",
-    "description": "An empty new project",
+    "name": "Nabehny",
+    "description": "Your Safety in an Application",
     "slug": "nabehny-app",
     "privacy": "public",
     "sdkVersion": "20.0.0",
@@ -11,7 +11,7 @@
     "icon": "./assets/icons/app-icon.png",
     "loading": {
       "icon": "./assets/icons/loading-icon.png",
-      "hideExponentText": false
+      "hideExponentText": true
     },
     "packagerOpts": {
       "assetExts": ["ttf", "mp4"]
@@ -21,7 +21,13 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.fireflies.nabehny"
+      "package": "com.fireflies.nabehny",
+      "icon": "https://i.imgur.com/imjzwIY.png",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBWOKNpyNteiMpwYQbGNE5X_NEXNxadwP0"
+        }
+      }
     }
   }
 }
