@@ -152,6 +152,9 @@ export const DrawerNavigation = DrawerNavigator(
   },
   {
     initialRouteName: 'MapScreen',
+    contentOptions: {
+      activeTintColor: '#C74246',
+    },
   },
 );
 
@@ -161,13 +164,13 @@ export const RootNavigator = StackNavigator(
       screen: DrawerNavigation,
     },
     Register: {
-      screen: RegisterScreenStack,
+      screen: RegisterScreen,
       navigationOptions: {
         title: 'Register',
       },
     },
     Login: {
-      screen: LoginScreenStack,
+      screen: LoginScreen,
       navigationOptions: {
         title: 'Login',
       },
